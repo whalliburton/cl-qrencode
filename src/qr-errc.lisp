@@ -29,8 +29,8 @@
 ;;------------------------------------------------------------------------------
 (defclass qr-polynomial ()
   ((polynomial :initarg :polynomial
-	       :accessor polynomial
-	       :initform nil)))
+         :accessor polynomial
+         :initform nil)))
 (defclass message-polynomial (qr-polynomial)
   ())
 (defclass generator-polynomial (qr-polynomial)
@@ -39,23 +39,23 @@
   "Print one term of the polynomial. MESSAGE-POLYNOMIAL as default."
   (let ((mul-sign nil)) ;; is there "*" or not
     (if message-p
-	(cond
-	  ((and (= coff 1) (= exp 0)) (format stream "1"))
-	  ((not (= coff 1)) (progn
-			      (format stream "~A" coff)
-			      (setf mul-sign t))))
-	(cond
-	  ((and (= coff 0) (= exp 0)) (format stream "1"))
-	  ((= coff 1) (progn (format stream "a")
-			     (setf mul-sign t)))
-	  ((not (= coff 0)) (progn (format stream "a^~A" coff)
-				   (setf mul-sign t)))))
+  (cond
+    ((and (= coff 1) (= exp 0)) (format stream "1"))
+    ((not (= coff 1)) (progn
+            (format stream "~A" coff)
+            (setf mul-sign t))))
+  (cond
+    ((and (= coff 0) (= exp 0)) (format stream "1"))
+    ((= coff 1) (progn (format stream "a")
+           (setf mul-sign t)))
+    ((not (= coff 0)) (progn (format stream "a^~A" coff)
+           (setf mul-sign t)))))
     (cond ((= exp 1) (progn (when mul-sign
-			      (format stream "*"))
-			    (format stream "x")))
-	  ((not (= exp 0)) (progn (when mul-sign
-				    (format stream "*"))
-				  (format stream "x^~A" exp)))))
+            (format stream "*"))
+          (format stream "x")))
+    ((not (= exp 0)) (progn (when mul-sign
+            (format stream "*"))
+          (format stream "x^~A" exp)))))
   (when (not last-p)
     (format stream " + ")))
 (defmethod print-object ((msgobj message-polynomial) stream)
@@ -63,22 +63,22 @@
   (format stream ">>>>>>>>>>>>>>>>>>>>>>>>>>>>~%")
   (format stream "Object of class MESSAGE-POLYNOMIAL:~%~T")
   (let* ((poly (polynomial msgobj))
-	 (size (- (length poly) 1)))
+   (size (- (length poly) 1)))
     (dotimes (i (+ size 1))
       (let ((term (nth i poly)))
-	(print-term stream (car term) (cdr term) :message-p t
-		    :last-p (= i size)))))
+  (print-term stream (car term) (cdr term) :message-p t
+        :last-p (= i size)))))
   (format stream "~%<<<<<<<<<<<<<<<<<<<<<<<<<<<<~%"))
 (defmethod print-object ((genobj generator-polynomial) stream)
   (fresh-line)
   (format stream ">>>>>>>>>>>>>>>>>>>>>>>>>>>>~%")
   (format stream "Object of class GENERATOR-POLYNOMIAL:~%~T")
   (let* ((poly (polynomial genobj))
-	 (size (- (length poly) 1)))
+   (size (- (length poly) 1)))
     (dotimes (i (+ size 1))
       (let ((term (nth i poly)))
-	(print-term stream (car term) (cdr term) :message-p nil
-		    :last-p (= i size)))))
+  (print-term stream (car term) (cdr term) :message-p nil
+        :last-p (= i size)))))
   (format stream "~%<<<<<<<<<<<<<<<<<<<<<<<<<<<<~%"))
 
 ;;------------------------------------------------------------------------------
@@ -103,9 +103,9 @@
 of multiplication for this GF(2^8)."
   (loop for i from 1 to (- *GF* 1) do
        (setf (aref *AEXP* i) (* (aref *AEXP* (- i 1))
-				2))
+        2))
        (when (>= (aref *AEXP* i) *GF*)
-	 (setf (aref *AEXP* i) (boole boole-xor (aref *AEXP* i) *PP*)))
+   (setf (aref *AEXP* i) (boole boole-xor (aref *AEXP* i) *PP*)))
        (setf (aref *LOG* (aref *AEXP* i)) i))
   (setf (aref *LOG* 1) 0))
 
@@ -121,16 +121,16 @@ we shall delete those terms whose cofficient are 0."
   "Addition for GF(2^8) between a message polynomial and a generator polynomial,
 exclusive-or operation to ensure closure, in fact."
   (let ((msgpoly (copy-tree (polynomial msgobj)))
-	(genpoly (copy-tree (polynomial genobj)))
-	(result (make-instance 'message-polynomial)))
+  (genpoly (copy-tree (polynomial genobj)))
+  (result (make-instance 'message-polynomial)))
     (loop for term in genpoly do
-	 (let ((xexp (cdr term)))
-	   (if (rassoc xexp msgpoly)
-	       (setf (car (rassoc xexp msgpoly))
-		     (boole boole-xor (car (rassoc xexp msgpoly))
-			    (aref *AEXP* (car term))))
-	       (setf msgpoly (append msgpoly (list (cons (aref *AEXP* (car term))
-							 (cdr term))))))))
+   (let ((xexp (cdr term)))
+     (if (rassoc xexp msgpoly)
+         (setf (car (rassoc xexp msgpoly))
+         (boole boole-xor (car (rassoc xexp msgpoly))
+          (aref *AEXP* (car term))))
+         (setf msgpoly (append msgpoly (list (cons (aref *AEXP* (car term))
+               (cdr term))))))))
     (setf (polynomial result) (sort-polynomial msgpoly))
     result))
 (defmethod addition ((genobj generator-polynomial) (msgobj message-polynomial))
@@ -140,15 +140,15 @@ exclusive-or operation to ensure closure, in fact."
   "Addition fo GF(2^8) between two generator polynomial: obtain corresponding integer
 of A^exp, XOR them, and then obtain the corresponding exponent."
   (let ((genpoly1 (polynomial genobj1))
-	(genpoly2 (polynomial genobj2))
-	(result (make-instance 'generator-polynomial)))
+  (genpoly2 (polynomial genobj2))
+  (result (make-instance 'generator-polynomial)))
     (loop for term in genpoly2 do
-	 (let ((xexp (cdr term)))
-	   (if (rassoc xexp genpoly1)
-	       (setf (car (rassoc xexp genpoly1))
-		     (aref *LOG* (boole boole-xor (aref *AEXP* (car (rassoc xexp genpoly1)))
-					(aref *AEXP* (car term)))))
-	       (setf genpoly1 (append genpoly1 (list term))))))
+   (let ((xexp (cdr term)))
+     (if (rassoc xexp genpoly1)
+         (setf (car (rassoc xexp genpoly1))
+         (aref *LOG* (boole boole-xor (aref *AEXP* (car (rassoc xexp genpoly1)))
+          (aref *AEXP* (car term)))))
+         (setf genpoly1 (append genpoly1 (list term))))))
     (setf (polynomial result) (sort-polynomial genpoly1 :message-p nil))
     result))
 
@@ -158,33 +158,33 @@ of A^exp, XOR them, and then obtain the corresponding exponent."
   "Helper function for multiply generator polynomial.
 Once some exponent of A surpasses *GF*, we do the math [(exp % *GF*) + 1]."
   (labels ((modulo (exp-sum)
-	     (if (>= exp-sum *GF*)
-		 (+ (mod exp-sum *GF*) 1)
-		 exp-sum))
-	   (adder (term)
-	     (case part
-	       (:car (cons (modulo (+ (car term) adelta))
-			   (cdr term)))
-	       (:cdr (cons (car term)
-			   (modulo (+ (cdr term) xdelta))))
-	       (:both (cons (modulo (+ (car term) adelta))
-			    (modulo (+ (cdr term) xdelta)))))))
+       (if (>= exp-sum *GF*)
+     (+ (mod exp-sum *GF*) 1)
+     exp-sum))
+     (adder (term)
+       (case part
+         (:car (cons (modulo (+ (car term) adelta))
+         (cdr term)))
+         (:cdr (cons (car term)
+         (modulo (+ (cdr term) xdelta))))
+         (:both (cons (modulo (+ (car term) adelta))
+          (modulo (+ (cdr term) xdelta)))))))
     (mapcar #'adder genpoly)))
 (defmethod multiplication ((genobj1 generator-polynomial) (genobj2 generator-polynomial))
   "Multiplication for GF(2^8) between two generator polynomial.
 We only consider genobj2 as ((0 . 1) (t . 0)), where t's max value is # of error
 correction word _MINUS_ 1."
   (let ((genpoly1 (polynomial genobj1))
-	(genpoly2 (polynomial genobj2))
-	(tmpobj1 (make-instance 'generator-polynomial))
-	(tmpobj2 (make-instance 'generator-polynomial))
-	(result (make-instance 'generator-polynomial)))
+  (genpoly2 (polynomial genobj2))
+  (tmpobj1 (make-instance 'generator-polynomial))
+  (tmpobj2 (make-instance 'generator-polynomial))
+  (result (make-instance 'generator-polynomial)))
     (setf (polynomial tmpobj1) (multiply-each-term genpoly1
-						   :xdelta 1
-						   :part :cdr))
+               :xdelta 1
+               :part :cdr))
     (setf (polynomial tmpobj2) (multiply-each-term genpoly1
-						   :adelta (car (second genpoly2))
-						   :part :car))
+               :adelta (car (second genpoly2))
+               :part :car))
     (setf result (addition tmpobj1 tmpobj2))
     (setf (polynomial result) (sort-polynomial (polynomial result) :message-p nil))
     ; (print (polynomial result))
@@ -195,27 +195,27 @@ correction word _MINUS_ 1."
   "Helper function, convert a sequence of 0-1 bstring to number."
   (declare (type string bstring))
   (let* ((bstring (reverse bstring))
-	 (len (length bstring))
-	 (result 0))
+   (len (length bstring))
+   (result 0))
     (dotimes (i len)
       (when (char= (char bstring i) #\1)
-	(incf result (ash 1 i))))
+  (incf result (ash 1 i))))
     result))
 (defun generate-msgpoly (bstring version errc blk)
   "Convert bstring to message polynomial, length should be times of 8."
   (declare (type string bstring)
-	   (type number version)
-	   (type symbol errc))
+     (type number version)
+     (type symbol errc))
   (let ((exponents (- (+ (nr-data-codewords version errc blk) 
-			 (nr-errc-codewords version errc))
-		     1))
-	(terms (/ (length bstring) 8))
-	(result (make-instance 'message-polynomial)))
+       (nr-errc-codewords version errc))
+         1))
+  (terms (/ (length bstring) 8))
+  (result (make-instance 'message-polynomial)))
     (dotimes (i terms)
       (let ((beg (* i 8)))
-	(setf (polynomial result) (append (polynomial result)
-					  (list (cons (bstring->decimal (subseq bstring beg (+ beg 8)))
-						      (- exponents i)))))))
+  (setf (polynomial result) (append (polynomial result)
+            (list (cons (bstring->decimal (subseq bstring beg (+ beg 8)))
+                  (- exponents i)))))))
     (setf (polynomial result) (sort-polynomial (polynomial result) :message-p t))
     result))
 ; Generate generator polynomial according to number of error correction words.
@@ -226,26 +226,26 @@ is the number of error correction words."
   ; We are trying to use the generator group, so init them first
   (init-galois-field)
   (let ((result (make-instance 'generator-polynomial))
-	(multiplier (make-instance 'generator-polynomial)))
+  (multiplier (make-instance 'generator-polynomial)))
     (setf (polynomial result) '((0 . 1) (0 . 0)))
     (loop for i from 1 to (- nr-errc-words 1) do
-	 (setf (polynomial multiplier) `((0 . 1) (,i . 0)))
-	 (setf result (multiplication result multiplier)))
+   (setf (polynomial multiplier) `((0 . 1) (,i . 0)))
+   (setf result (multiplication result multiplier)))
     result))
 
 (defun generate-errcobj-1 (errcobj max)
   (let ((msgpoly (polynomial errcobj))
-	(newpoly nil))
+  (newpoly nil))
     (do ((term (first msgpoly))
-	 (xexp (- max 1) (1- xexp)))
-	((< xexp 0))
+   (xexp (- max 1) (1- xexp)))
+  ((< xexp 0))
       (if (and (cdr term)
-	       (= xexp (cdr term)))
-	  (progn
-	    (push term newpoly)
-	    (setf msgpoly (rest msgpoly))
-	    (setf term (first msgpoly)))
-	  (push (cons 0 xexp) newpoly)))
+         (= xexp (cdr term)))
+    (progn
+      (push term newpoly)
+      (setf msgpoly (rest msgpoly))
+      (setf term (first msgpoly)))
+    (push (cons 0 xexp) newpoly)))
     (setf (polynomial errcobj) (reverse newpoly))))
 (defun generate-errcobj (bstring version errc blk)
   "Generate error correction polynomial. This in fact is the division operation of GF(2^8):
@@ -253,25 +253,25 @@ is the number of error correction words."
 2. XOR the multiply result so as to erase the first term of message polynomial.
 3. Repeat 1 & 2 until the first term of result is less than generator polynomial."
   (declare (type string bstring)
-	   (type number version)
-	   (type symbol errc))
+     (type number version)
+     (type symbol errc))
   (let* ((msgobj (generate-msgpoly bstring version errc blk))
-	 (genobj (generate-genobj (nr-errc-codewords version errc)))
-	 (genpoly (polynomial genobj))
-	 (tmpobj (make-instance 'generator-polynomial)))
+   (genobj (generate-genobj (nr-errc-codewords version errc)))
+   (genpoly (polynomial genobj))
+   (tmpobj (make-instance 'generator-polynomial)))
     (dbg :qr-errc "Message Polynomial")
     (dbg :qr-errc "~A" msgobj)
     (dbg :qr-errc "Generator Polynomial:")
     (dbg :qr-errc "~A" genobj)
     (do ()
-	((< (cdr (first (polynomial msgobj)))
-	    (cdr (first genpoly))))
+  ((< (cdr (first (polynomial msgobj)))
+      (cdr (first genpoly))))
       (let ((adelta (aref *LOG* (car (first (polynomial msgobj)))))
-	    (xdelta (- (cdr (first (polynomial msgobj)))
-		       (cdr (first genpoly)))))
-	(setf (polynomial tmpobj) (multiply-each-term genpoly :adelta adelta
-						      :xdelta xdelta :part :both))
-	(setf msgobj (addition msgobj tmpobj))))
+      (xdelta (- (cdr (first (polynomial msgobj)))
+           (cdr (first genpoly)))))
+  (setf (polynomial tmpobj) (multiply-each-term genpoly :adelta adelta
+                  :xdelta xdelta :part :both))
+  (setf msgobj (addition msgobj tmpobj))))
     (generate-errcobj-1 msgobj (cdr (first genpoly)))
     (dbg :qr-errc "Errc Polynomial:")
     (dbg :qr-errc "~A" msgobj)
@@ -282,10 +282,10 @@ is the number of error correction words."
   "Walk through the polynomial, translate each cofficient back into bstring
 using 8 bits."
   (let ((errcpoly (polynomial errcobj))
-	(bstring ""))
+  (bstring ""))
     (loop for term in errcpoly do
-	 (setf bstring (concatenate 'string bstring
-				    (decimal->bstring (car term) 8))))
+   (setf bstring (concatenate 'string bstring
+            (decimal->bstring (car term) 8))))
     bstring))
 
 ;;------------------------------------------------------------------------------
@@ -304,21 +304,21 @@ FORMAT-P means bstring is Format Information, otherwise, Version Information."
   (declare (type string bstring))
   (when (and format-p (not (= (length bstring) 5)))
     (error 'qr-bad-arguments :file-name "qr-errc.lisp"
-	   :function-name "info->msgpoly" :arguments bstring
-	   :how "Format Information is consisted of 5 bits."))
+     :function-name "info->msgpoly" :arguments bstring
+     :how "Format Information is consisted of 5 bits."))
   (when (and (not format-p) (not (= (length bstring) 6)))
     (error 'qr-bad-arguments :file-name "qr-errc.lisp"
-	   :function-name "info->msgpoly" :arguments bstring
-	   :how "Version Information is consisted of 6 bits."))
+     :function-name "info->msgpoly" :arguments bstring
+     :how "Version Information is consisted of 6 bits."))
   (let ((msgobj (make-instance 'message-polynomial))
-	(len (length bstring))
-	(xdelta 12)
-	poly)
+  (len (length bstring))
+  (xdelta 12)
+  poly)
     (when format-p
       (setf xdelta 10))
     (dotimes (i len)
       (when (char= (char bstring i) #\1)
-	(setf poly (append poly (list (cons 1 (- len 1 i)))))))
+  (setf poly (append poly (list (cons 1 (- len 1 i)))))))
     (setf (polynomial msgobj) (multiply-each-term poly :xdelta xdelta))
     msgobj))
 (defun info->errcpoly (bstring &key (format-p t))
@@ -327,48 +327,48 @@ BCH(18, 6) for Version. Different from above, that coffients are all 1 for Messa
 Polynomial(0 for Generator Polynomial, of course)."
   (declare (type string bstring))
   (let ((msgobj (info->msgobj bstring :format-p format-p))
-	(genobj (make-instance 'generator-polynomial))
-	(tmpobj (make-instance 'generator-polynomial)))
+  (genobj (make-instance 'generator-polynomial))
+  (tmpobj (make-instance 'generator-polynomial)))
     (dbg :qr-errc "Format/Version Information Polynomial:")
     (dbg :qr-errc "~A" msgobj)
     (if format-p
-	(setf (polynomial genobj) *format-generator*)
-	(setf (polynomial genobj) *version-generator*))
+  (setf (polynomial genobj) *format-generator*)
+  (setf (polynomial genobj) *version-generator*))
     (dbg :qr-errc "Format/Version Information Generator Polynomial:")
     (dbg :qr-errc "~A" genobj)
     (do ((genpoly (polynomial genobj)))
-	((< (cdr (first (polynomial msgobj)))
-	    (cdr (first genpoly))))
+  ((< (cdr (first (polynomial msgobj)))
+      (cdr (first genpoly))))
       (let ((xdelta (- (cdr (first (polynomial msgobj)))
-		       (cdr (first genpoly)))))
-	(setf (polynomial tmpobj) (multiply-each-term genpoly :xdelta xdelta))
-	(setf msgobj (addition msgobj tmpobj))))
+           (cdr (first genpoly)))))
+  (setf (polynomial tmpobj) (multiply-each-term genpoly :xdelta xdelta))
+  (setf msgobj (addition msgobj tmpobj))))
     (if format-p
-	(dbg :qr-errc "Format Information Errc Polynomial:")
-       	(dbg :qr-errc "Version Information Errc Polynomial:"))
+  (dbg :qr-errc "Format Information Errc Polynomial:")
+        (dbg :qr-errc "Version Information Errc Polynomial:"))
     (dbg :qr-errc "~A" msgobj)
     msgobj))
 (defun generate-info-errc (bstring &key (format-p t))
   "Generate Error Correction bits for Format/Version Information"
   (let* ((errcobj (info->errcpoly bstring :format-p format-p))
-	 (nrerrc 12) ; # of Version Information Errc bits
-	 (errcpoly (polynomial errcobj))
-	 errcbits)
+   (nrerrc 12) ; # of Version Information Errc bits
+   (errcpoly (polynomial errcobj))
+   errcbits)
     (when format-p
       (setf nrerrc 10))
     (setf errcbits (make-string nrerrc :initial-element #\0))
     (labels ((set-bit (term)
-	       (setf (char errcbits (- nrerrc 1 (cdr term))) #\1)))
+         (setf (char errcbits (- nrerrc 1 (cdr term))) #\1)))
       (mapcar #'set-bit errcpoly))
     errcbits))
 (defun info->bstring (bstring &key (format-p t))
   "Do Error Correction for the Format/Version Information, concatenate them, and,
 for Format Information, XOR it with the mask 101010000010010."
   (let ((errcbits (generate-info-errc bstring :format-p format-p))
-	(mask "101010000010010"))
+  (mask "101010000010010"))
     (setf bstring (concatenate 'string bstring errcbits))
     (when format-p
       (setf bstring (map 'string #'(lambda (char1 char2)
-				     (if (char= char1 char2) #\0 #\1))
-			 bstring mask)))
+             (if (char= char1 char2) #\0 #\1))
+       bstring mask)))
     bstring))

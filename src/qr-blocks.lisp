@@ -27,22 +27,22 @@
   (let ((blocks nil))
     ; block 1 & 2
     (loop for blk from 1 to 2 do
-	 (let ((nr-blk (nr-block version correct blk))
-	       (sz-blk (* (nr-data-codewords version correct blk) 8))
-	       (data ""))
-	   (loop for i from 1 to nr-blk do
-		(setf data (subseq bstring 0 sz-blk))
-		(setf bstring (subseq bstring sz-blk))
-		(let ((blkobj (make-instance 'qr-block :data-codewords data
-					     :block-id blk)))
-		  (push blkobj blocks)))))
+     (let ((nr-blk (nr-block version correct blk))
+           (sz-blk (* (nr-data-codewords version correct blk) 8))
+           (data ""))
+       (loop for i from 1 to nr-blk do
+        (setf data (subseq bstring 0 sz-blk))
+        (setf bstring (subseq bstring sz-blk))
+        (let ((blkobj (make-instance 'qr-block :data-codewords data
+                         :block-id blk)))
+          (push blkobj blocks)))))
     (reverse blocks)))
 
 (defun block-errc (ablock version correct)
   (let ((bstring (data-codewords ablock))
-	(blk (block-id ablock)))
+    (blk (block-id ablock)))
     (setf (errc-codewords ablock) (errcobj->bstring 
-				   (generate-errcobj bstring version correct blk)))
+                   (generate-errcobj bstring version correct blk)))
     (fresh-line)))
 
 (defun do-errc (blocks version correct)
@@ -51,23 +51,23 @@
 
 (defun blocks->bstring (blocks version correct)
   (let ((bstring "")
-	(nr-blk (length blocks))
-	(idx (max (nr-data-codewords version correct 1)
-		  (nr-data-codewords version correct 2)))
-	(idx2 (nr-errc-codewords version correct)))
+    (nr-blk (length blocks))
+    (idx (max (nr-data-codewords version correct 1)
+          (nr-data-codewords version correct 2)))
+    (idx2 (nr-errc-codewords version correct)))
 
     (loop for i from 0 to (- idx 1) do
-	 (loop for j from 1 to nr-blk do
-	      (and (< (* 8 i) (length (data-codewords (nth (- j 1) blocks))))
-		   (setf bstring (concatenate 'string bstring
-					      (subseq (data-codewords (nth (- j 1) blocks))
-						      (* 8 i)
-						      (* 8 (+ i 1))))))))
+     (loop for j from 1 to nr-blk do
+          (and (< (* 8 i) (length (data-codewords (nth (- j 1) blocks))))
+           (setf bstring (concatenate 'string bstring
+                          (subseq (data-codewords (nth (- j 1) blocks))
+                              (* 8 i)
+                              (* 8 (+ i 1))))))))
 
     (loop for i from 0 to (- idx2 1) do
-	 (loop for j from 1 to nr-blk do
-	      (setf bstring (concatenate 'string bstring
-					 (subseq (errc-codewords (nth (- j 1) blocks))
-						 (* 8 i)
-						 (* 8 (+ i 1)))))))
+     (loop for j from 1 to nr-blk do
+          (setf bstring (concatenate 'string bstring
+                     (subseq (errc-codewords (nth (- j 1) blocks))
+                         (* 8 i)
+                         (* 8 (+ i 1)))))))
     bstring))

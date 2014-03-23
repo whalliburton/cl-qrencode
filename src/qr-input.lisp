@@ -36,7 +36,7 @@
   (format stream ">>>>>>>>>>>>>>>>>>>>>>>>>>>>~%")
   (format stream "Object of class QR-INPUT:~%~T")
   (format stream "Data:~T`~A'~%~TVersion:~T~A~%~TMode:~T~A~%~TCorrection Level:~T~A"
-	  (data input) (version input) (mode input) (correction input))
+    (data input) (version input) (mode input) (correction input))
   (format stream "~%<<<<<<<<<<<<<<<<<<<<<<<<<<<<~%"))
 
 (defmethod encode-input ((input qr-input))
@@ -44,25 +44,25 @@
     (setf data-bstring (data->bstring data mode))
     ; Terminator
     (setf data-bstring (concatenate 'string data-bstring
-				    "0000")))
+            "0000")))
   input)
 
 (defmethod adjust-version ((input qr-input) data-len)
   "Assume we can find a version to hold all data"
   (with-slots (version mode correction data data-bstring) input
     (loop for ver from version to 41 do
-	 (when (= ver 41)
-	   (setf version 41)
-	   (return))
+   (when (= ver 41)
+     (setf version 41)
+     (return))
          ; mode indicator length, character count indicator length
-	 (let ((mil 4)
-	       (cil (count-indicator-bits ver mode)))
-	   (when (<= (* (ceiling (+ mil cil data-len) 8) 8)
-		     (data-bits-capacity ver correction))
-	     (unless (= version ver)
-	       (dbg :qr-input-core "Version reset from ~A to ~A~%" version ver)
-	       (setf version ver))
-	     (return))))))
+   (let ((mil 4)
+         (cil (count-indicator-bits ver mode)))
+     (when (<= (* (ceiling (+ mil cil data-len) 8) 8)
+         (data-bits-capacity ver correction))
+       (unless (= version ver)
+         (dbg :qr-input-core "Version reset from ~A to ~A~%" version ver)
+         (setf version ver))
+       (return))))))
 
 (defun string->input (text &key (version 1) (mode :binary) (correction :level-q))
   "Put the input text into the QR-INPUT instance, with version adjusted"
@@ -70,7 +70,7 @@
   (setf version (max version 1))
   (setf version (min version 40))
   (let ((input (make-instance 'qr-input :data text
-			      :version version :mode mode :correction correction)))
+            :version version :mode mode :correction correction)))
     (let ((len (length (data-bstring (encode-input input)))))
       (adjust-version input len))
     input))

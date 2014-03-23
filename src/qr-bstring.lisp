@@ -30,12 +30,12 @@
   (declare (type number num bits))
   (when (< (- (expt 2 bits) 1) num)
     (error 'qr-bad-arguments :file-name "qr-bstring.lisp" :function-name "decmimal->bstring"
-	   :arguments '(num bits) :how "Bits not enough to hold num."))
+     :arguments '(num bits) :how "Bits not enough to hold num."))
   (let ((bstring ""))
     (dotimes (i bits)
       (if (logbitp i num)
-	  (setf bstring (concatenate 'string bstring "1"))
-	  (setf bstring (concatenate 'string bstring "0"))))
+    (setf bstring (concatenate 'string bstring "1"))
+    (setf bstring (concatenate 'string bstring "0"))))
     (reverse bstring)))
 
 ;;; 3. Encode input data string.
@@ -44,9 +44,9 @@
   "Functions to encode input data string, defined in qr-data-bstring.lisp.")
 (defun data->bstring (data mode)
   (declare (type string data)
-	   (type symbol mode))
+     (type symbol mode))
   (let* ((idx (mode->index mode))
-	 (encode (nth idx *encode-functions*)))
+   (encode (nth idx *encode-functions*)))
     (funcall encode data)))
 
 ;;; 4. padding-bits
@@ -61,16 +61,16 @@ We have assured that REMAIN-BITS is multiple of 8 in function (padding-bits)."
   (declare (type number remain-bits))
   (when (not (= (mod remain-bits 8) 0))
     (error 'qr-bad-arguments :file-name "qr-bstring.lisp"
-	   :function-name "padding-pad-codeword" :arguments remain-bits
-	   :how "BLENGTH shall be times of eight, something went wrong..."))
+     :function-name "padding-pad-codeword" :arguments remain-bits
+     :how "BLENGTH shall be times of eight, something went wrong..."))
   (let ((bytes (/ remain-bits 8))
-	(result ""))
+  (result ""))
     (dotimes (idx bytes)
       (if (evenp idx)
-	  (setf result (concatenate 'string result
-				    "11101100"))
-	  (setf result (concatenate 'string result
-				    "00010001"))))
+    (setf result (concatenate 'string result
+            "11101100"))
+    (setf result (concatenate 'string result
+            "00010001"))))
     result))
 
 ;;; The overall function to encode qr-input to bstring.
@@ -79,27 +79,27 @@ We have assured that REMAIN-BITS is multiple of 8 in function (padding-bits)."
   (let ((bstring ""))
     (with-slots (version mode data-bstring (correct correction)) input
       (setf bstring (concatenate 'string bstring
-				 (mode->bstring mode)
-				 (decimal->bstring (length (data input))
-						   (count-indicator-bits version mode))
-				 data-bstring))
+         (mode->bstring mode)
+         (decimal->bstring (length (data input))
+               (count-indicator-bits version mode))
+         data-bstring))
 
       ; 5. Padding bits
       (let ((len (length bstring)))
-	(setf bstring (concatenate 'string bstring
-				   (padding-bits len))))
+  (setf bstring (concatenate 'string bstring
+           (padding-bits len))))
       ; 6. Padding Pad codewords
       (let ((len (length bstring)))
-	(setf bstring (concatenate 'string bstring
-				   (padding-pad-codeword (- (data-bits-capacity version correct)
-							    len)))))
+  (setf bstring (concatenate 'string bstring
+           (padding-pad-codeword (- (data-bits-capacity version correct)
+                  len)))))
 
       (let ((blocks (bstring->blocks bstring version correct)))
-	(do-errc blocks version correct)
-	(setf bstring (blocks->bstring blocks version correct)))
+  (do-errc blocks version correct)
+  (setf bstring (blocks->bstring blocks version correct)))
     
       ; 7. Any remainder bits needed? *MODULE-CAPACITY-TABLE*
       (setf bstring (concatenate 'string bstring
-				 (make-string (remainder-bits version) :initial-element #\0))))
+         (make-string (remainder-bits version) :initial-element #\0))))
     
     bstring))

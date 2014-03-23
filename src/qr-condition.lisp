@@ -22,48 +22,48 @@
 ; Self-explaining, no comments needed...
 (define-condition qr-condition (error)
   ((file-name :accessor file-name
-	      :initarg :file-name
-	      :initform nil)
+          :initarg :file-name
+          :initform nil)
    (function-name :accessor function-name
-		  :initarg :function-name
-		  :initform nil))
+          :initarg :function-name
+          :initform nil))
   (:report (lambda (condition stream)
-	     (format stream "qr-condition occurred at `~A' in `~A'"
-		     (function-name condition)
-		     (file-name condition)))))
+         (format stream "qr-condition occurred at `~A' in `~A'"
+             (function-name condition)
+             (file-name condition)))))
 
 (define-condition qr-bad-arguments (qr-condition)
   ((arguments :accessor arguments
-	      :initarg :arguments)
+          :initarg :arguments)
    (what :accessor what
-	 :initform "Bad argument(s)")
+     :initform "Bad argument(s)")
    (how :accessor how
-	:initarg :how))
+    :initarg :how))
   (:report (lambda (condition stream)
-	     (if (and (function-name condition) (file-name condition))
-		 (progn
-		   (format stream "Function `~A' in file `~A' says:~%`~A': `~A'~%"
-			   (function-name condition)
-			   (file-name condition)
-			   (what condition)
-			   (arguments condition))
-		   (format stream "~A~%" (how condition)))
-		 (format stream "~A~%" (what condition))))))
+         (if (and (function-name condition) (file-name condition))
+         (progn
+           (format stream "Function `~A' in file `~A' says:~%`~A': `~A'~%"
+               (function-name condition)
+               (file-name condition)
+               (what condition)
+               (arguments condition))
+           (format stream "~A~%" (how condition)))
+         (format stream "~A~%" (what condition))))))
   
 (define-condition qr-not-implemented (qr-condition)
   ((mode :accessor mode
-	 :initarg :mode
-	 :initform "KANJI mode")
+     :initarg :mode
+     :initform "KANJI mode")
    (what :accessor what
-	 :initform "not implemented yet in current version."))
+     :initform "not implemented yet in current version."))
   (:report (lambda (condition stream)
-	     (format stream "~A ~A~%" (mode condition)
-		     (what condition)))))
+         (format stream "~A ~A~%" (mode condition)
+             (what condition)))))
 
 ;; For testcases
 (define-condition qr-test-failure (qr-condition)
   ((arguments :accessor arguments
-	      :initarg :arguments))
+          :initarg :arguments))
   (:report (lambda (condition stream)
-	     (format stream "Function ~A fails with arguments ~A"
-		     (function-name condition) (arguments condition)))))
+         (format stream "Function ~A fails with arguments ~A"
+             (function-name condition) (arguments condition)))))

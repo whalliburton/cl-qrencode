@@ -37,9 +37,9 @@ encoded.")
     (:binary 2) ; 8-bit byte data
     (:kanji 3)
     (t (if default-p
-	   1
-	   (error 'qr-bad-arguments :file-name "qr-spec.lisp" :function-name "mode->index"
-		  :arguments '(mode) :how "Allowed mode only includes `:numeric', `:alphanumeric',
+     1
+     (error 'qr-bad-arguments :file-name "qr-spec.lisp" :function-name "mode->index"
+      :arguments '(mode) :how "Allowed mode only includes `:numeric', `:alphanumeric',
 `:binary' and `:kanji'")))))
 ;;; Encode Mode Indicator into bstring
 (defun mode->bstring (mode)
@@ -63,12 +63,12 @@ mode and symbol version in use.")
   "# of bits used to represent length of data."
   (let (i j)
     (setf i (cond 
-	      ((<= 1 version 9) 0)
-	      ((<= 10 version 26) 1)
-	      ((<= 27 version 40) 2)
-	      (t (error 'qr-bad-arguments :file-name "qr-spec.lisp"
-			:function-name "count-indicator-bits" :arguments '(version)
-			:how "Version ranges from 1 to 40."))))
+        ((<= 1 version 9) 0)
+        ((<= 10 version 26) 1)
+        ((<= 27 version 40) 2)
+        (t (error 'qr-bad-arguments :file-name "qr-spec.lisp"
+      :function-name "count-indicator-bits" :arguments '(version)
+      :how "Version ranges from 1 to 40."))))
     (setf j (mode->index mode))
     (aref *count-indicator-bits-table* i j)))
 
@@ -104,19 +104,19 @@ for each mode, the character capacity are different.")
     (:level-q 2)
     (:level-h 3)
     (t (if default-p
-	   2
-	   (error 'qr-bad-arguments :file-name "qr-spec.lisp" 
-		  :function-name "corrlev->index"
-		  :arguments '(correct) :how "Allowded Correction Level only includes
+     2
+     (error 'qr-bad-arguments :file-name "qr-spec.lisp" 
+      :function-name "corrlev->index"
+      :arguments '(correct) :how "Allowded Correction Level only includes
  `:level-l',`:level-m', `:level-q' and `:level-h'")))))
 (defun data-bits-capacity (version correct)
   (declare (type number version)
-	   (type symbol correct))
+     (type symbol correct))
   (if (<= 1 version 40)
       (let ((j (corrlev->index correct)))
-	(aref *data-capacity-table* (- version 1) j))
+  (aref *data-capacity-table* (- version 1) j))
       (error 'qr-bad-arguments :file-name "qr-spec.lisp" :function-name "data-bits-capacity"
-	     :arguments '(version) :how "Version ranges from 1 to 40.")))
+       :arguments '(version) :how "Version ranges from 1 to 40.")))
 
 ;;------------------------------------------------------------------------------
 ;; (3) Error Correction codewords: Table 13 ~ Table 22
@@ -124,7 +124,7 @@ for each mode, the character capacity are different.")
 ;;------------------------------------------------------------------------------
 (defvar *errc-words-table*
   ; (Version, errc-level) ==> (# of error correction codeword for each blk, # of block 1,
-  ;			       # of data codewords, # of block 2, # of data codewords)
+  ;            # of data codewords, # of block 2, # of data codewords)
   ; :level-l :level-m :level-q :level-h
   #3A(
       ((7 1 19 0 0)      (10 1 16 0 0)    (13 1 13 0 0)    (17 1 9 0 0))     ; Version 1
@@ -174,20 +174,20 @@ for each mode, the character capacity are different.")
     (aref *errc-words-table* (- version 1) j idx)))
 (defun nr-errc-codewords (version correct)
   (declare (type number version)
-	   (type symbol correct))
+     (type symbol correct))
   (errc-words version correct 0))
 (defun nr-block (version correct blk)
   (assert (or (= blk 1) (= blk 2)))
   (errc-words version correct (- (* blk 2) 1)))
 (defun nr-data-codewords (version correct blk)
   (declare (type number version)
-	   (type symbol correct))
+     (type symbol correct))
   (assert (or (= blk 1) (= blk 2)))
   (errc-words version correct (* 2 blk)))
 (defun nr-codewords (version correct)
   "Both data codewords and error correction codewords."
   (declare (type number version)
-	   (type symbol correct))
+     (type symbol correct))
   (+ (nr-errc-codewords version correct)
      (nr-data-codewords version correct)))
 
@@ -222,26 +222,26 @@ modules B | Format and Version information modules C | Data modules(A^2-B-C) | D
 capacity codewords(including error correction) | Remainder bits.")
 (defun module-capacity (version idx)
   (when (or (not (<= 1 version 40))
-	    (not (<= 0 idx 5)))
+      (not (<= 0 idx 5)))
     (error 'qr-bad-arguments :file-name "qr-spec.lisp"
-	   :function-name "module-capacity" :arguments '(version idx)
-	   :how "VERSION ranges from 1 to 40; IDX ranges from 0 to 5."))
+     :function-name "module-capacity" :arguments '(version idx)
+     :how "VERSION ranges from 1 to 40; IDX ranges from 0 to 5."))
   (aref *module-capacity-table* (- version 1) idx))
 (defun matrix-modules (version)
   "Overall modules: (MATRIX-MODULES) * (MATRIX-MODULES)."
   (if (<= 1 version 40)
       (module-capacity version 0)
       (error 'qr-bad-arguments :file-name "qr-spec.lisp"
-	     :function-name "matrix-modules"
-	     :arguments version
-	     :how "Version ranges from 1 to 40.")))
+       :function-name "matrix-modules"
+       :arguments version
+       :how "Version ranges from 1 to 40.")))
 (defun remainder-bits (version)
   "Remainder bits to be added after the error correction codeword."
   (if (<= 1 version 40)
       (module-capacity version 5)
       (error 'qr-bad-arguments :file-name "qr-spec.lisp"
-	     :function-name "remainder-bits" :arguments version
-	     :how "Version ranges from 1 to 40.")))
+       :function-name "remainder-bits" :arguments version
+       :how "Version ranges from 1 to 40.")))
 
 ;; Table E.1
 (defvar *align-coord-table*
@@ -264,26 +264,26 @@ capacity codewords(including error correction) | Remainder bits.")
 (defun valid-center-p (x y modules)
   "The Alignment Center is not in the Finder Patterns."
   (not (or (and (<= 0 x 8) (<= 0 y 8)) ; In the upper left finder pattern
-	   (and (<= 0 x 8)
-		(<= (- modules 8) y (- modules 1))) ; In the upper right finder pattern
-	   (and (<= (- modules 8) x (- modules 1))
-		(<= 0 y 8)))))
+     (and (<= 0 x 8)
+    (<= (- modules 8) y (- modules 1))) ; In the upper right finder pattern
+     (and (<= (- modules 8) x (- modules 1))
+    (<= 0 y 8)))))
 ;; Annex E
 (defun align-centers (version)
   "Get the centers of the Alignment Patterns."
   (let* ((modules (matrix-modules version))
-	 (coords (aref *align-coord-table* (- version 1) 1))
-	 (len (length coords))
-	 (centers ()))
+   (coords (aref *align-coord-table* (- version 1) 1))
+   (len (length coords))
+   (centers ()))
     (dotimes (i len)
       (loop for j from i to (- len 1) do
-	   (let ((x (elt coords i))
-		 (y (elt coords j)))
-	     (when (valid-center-p x y modules)
-	       (setf centers (append centers (list `(,x ,y)))))
-	     (when (not (= x y))
-	       (when (valid-center-p y x modules)
-		 (setf centers (append centers (list `(,y ,x)))))))))
+     (let ((x (elt coords i))
+     (y (elt coords j)))
+       (when (valid-center-p x y modules)
+         (setf centers (append centers (list `(,x ,y)))))
+       (when (not (= x y))
+         (when (valid-center-p y x modules)
+     (setf centers (append centers (list `(,y ,x)))))))))
     centers))
     
 (defun mask-condition (indicator)
@@ -297,19 +297,19 @@ meet the condition are reversed."
       (2 (= (mod y 3) 0))
       (3 (= (mod (+ x y) 3) 0))
       (4 (= (mod (+ (floor x 2)
-		    (floor y 3))
-		 2) 0))
+        (floor y 3))
+     2) 0))
       (5 (= (+ (mod (* x y) 2)
-	       (mod (* x y) 3)) 0))
+         (mod (* x y) 3)) 0))
       (6 (= (mod (+ (mod (* x y) 2)
-		    (mod (* x y) 3))
-		 2) 0))
+        (mod (* x y) 3))
+     2) 0))
       (7 (= (mod (+ (mod (* x y) 3)
-		    (mod (+ x y) 2))
-		 2) 0))
+        (mod (+ x y) 2))
+     2) 0))
       (t (error 'qr-bad-arguments :file-name "qr-spec.lisp" :function-name "masker"
-		:arguments '(indicator)
-		:how "There are only 8 mask patterns, so indicator ranges from 0 to 7.")))))
+    :arguments '(indicator)
+    :how "There are only 8 mask patterns, so indicator ranges from 0 to 7.")))))
 
 ;;------------------------------------------------------------------------------
 ;; (5) Now, We paint the Format Information & Version Information in the matrix modules
