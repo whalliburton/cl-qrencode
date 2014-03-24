@@ -20,9 +20,9 @@
 (defpackage #:cl-qrencode
   (:use #:cl #:zpng)
   (:import-from #:zpng
-		#:png
-		#:data-array
-		#:write-png)
+                #:png
+                #:data-array
+                #:write-png)
   (:export #:qrencode
-	   #:sdebug
-	   #:undebug))
+           #:sdebug
+           #:undebug))

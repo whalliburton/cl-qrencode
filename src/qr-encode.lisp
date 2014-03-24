@@ -267,25 +267,26 @@ Information: they cannot be masked."
   (and (<= 0 x 8) (<= (- modules 8) y (- modules 1))) ; 2) Upper-Right PDP
   (and (<= 0 y 8) (<= (- modules 8) x (- modules 1))) ; 3) Lower-Left PDP
   )))
+
 ;;------------------------------------------------------------------------------
 ;; One Ring to Rule Them All, One Ring to Find Them,
 ;; One Ring to Bring Them All and In the Darkness Blind Them:
 ;;   This function wraps all we need.
 ;;------------------------------------------------------------------------------
 (defun qrencode (text &key (fpng "out.png") (version 1) (mode :binary)
-     (correction :level-q) (pixsize 9) (margin 6))
+                           (correction :level-q) (pixsize 9) (margin 6))
   (declare (type string text) (type number version)
-     (type symbol mode correction))
+           (type symbol mode correction))
   ; (sdebug :qr-input :qr-errc :qr-matrix)
   (sdebug :qr-input-core)
   (let* ((input (string->input text :version version
              :mode mode :correction correction))
-   (bstring (input->bstring input)))
+         (bstring (input->bstring input)))
     (dbg :qr-input "~A" bstring)
     (dbg :qr-input "~A" (length bstring))
     ; version adusted
     (with-slots (version) input
       (let ((matrix (codeword-placement bstring version correction)))
-  (matrix->png matrix fpng version pixsize margin))))
+    (matrix->png matrix fpng version pixsize margin))))
   (format t "png file `~A' wrote..." fpng)
   (values))

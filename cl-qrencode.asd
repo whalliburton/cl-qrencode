@@ -20,27 +20,27 @@
 ; (error "Unfortunately, this package only works under SBCL for now.")
 
 (asdf:defsystem #:cl-qrencode
-  :name    "cl-qrencode"
+  :name "cl-qrencode"
   :description "QR Code encoder in pure Common Lisp."
-  :author  "johnc <jnjcc@live.com>"
+  :author "johnc <jnjcc@live.com>"
   :version "1.0.2"
   :maintainer "johnc <jnjcc@live.com>"
   :licence "GPL"
   :depends-on (#:zpng #:babel)
   :components ((:file "package")
-           (:module "src"
-            :components ((:file "qr-utils")
-                     (:file "qr-condition")
-                     (:file "qr-spec")
-                     (:file "qr-input")
-                     (:file "qr-data-bstring")
-                     (:file "qr-bstring")
-                     (:file "qr-errc")
-                     (:file "qr-encode")
-                     (:file "qr-blocks")
-                     (:file "qr-mask")
-                     (:file "qr-image")))
-           (:module "tests"
-            :components ((:file "qr-bstring-testcase")
-                     (:file "qr-encode-testcase")
-                     (:file "qr-errc-testcase")))))
+               (:module "src"
+                :components ((:file "qr-utils")
+                             (:file "qr-condition")
+                             (:file "qr-spec")
+                             (:file "qr-input")
+                             (:file "qr-data-bstring")
+                             (:file "qr-bstring")
+                             (:file "qr-errc")
+                             (:file "qr-encode")
+                             (:file "qr-blocks")
+                             (:file "qr-mask")
+                             (:file "qr-image")))
+               (:module "tests"
+                :components ((:file "qr-bstring-testcase")
+                             (:file "qr-encode-testcase")
+                             (:file "qr-errc-testcase")))))
