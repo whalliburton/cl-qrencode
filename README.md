@@ -1,18 +1,25 @@
-cl-qrencode
-==========
+# CL-QRENCODE
+
 QR Code encoder in pure Common Lisp. A somewhat working version for now.
 
-TODO (AFAIK)
-==========
+Forked from: https://github.com/jnjcc/cl-qrencode
+
+#### Usage
+
+
+```lisp
+
+* (cl-qrencode:qrencode "https://github.com/thephoeron/cl-qrencode" :fpng "github-qr.png")
+Version reset from 1 to 4
+
+png file `github-qr.png' wrote...
+
+```
+
+#### TO-DO (AFAIK)
+
 * ECI mode, FNC1 mode & Mixing modes
 * Structured Append Mode
-* Code optimization<br />
-  => They say "Premature optimization is the root of all evil"<br />
-  => They say "TODO means never", :-)
+* create directories for output png automatically
+* add more image output formats, starting with SVG
 
-NOTE
-==========
-Wanna give it a try, and... \_bug\_?<br />
- a) YOU fix it, and mail me if YOU wish<br />
- b) YOU wrote another one, that's \_easy\_<br />
- c) Mail me
