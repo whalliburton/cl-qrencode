@@ -7,7 +7,7 @@
 ;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
@@ -28,7 +28,7 @@
   (let ((len (length num-group))
   (result 0))
     (when (or (< len 1) (> len 3))
-      (error 'qr-bad-arguments :file-name "qr-data-bstring.lisp" 
+      (error 'qr-bad-arguments :file-name "qr-data-bstring.lisp"
        :function-name "group->decimal" :arguments '(num-group)
        :how "Under NUMERIC mode, input is divided into groups of 3 (or less) digits."))
     (dotimes (idx len)
@@ -47,7 +47,7 @@
     (3 (decimal->bstring (group->decimal num-group) 10)) ;10 bits long for 3 digits
     (2 (decimal->bstring (group->decimal num-group) 7))  ;7 bits long for 2 digits
     (1 (decimal->bstring (group->decimal num-group) 4))  ;4 bits long for 1 digits
-    (t (error 'qr-bad-arguments :file-name "qr-data-bstring.lisp" 
+    (t (error 'qr-bad-arguments :file-name "qr-data-bstring.lisp"
         :function-name "group->bstring" :arguments '(num-group)
         :how "Under NUMERIC mode, input is diviede into groups of 3 (or less) digits."))))
 
@@ -97,11 +97,11 @@
   (declare (type string alpha-pair))
   (setf alpha-pair (string-upcase alpha-pair))
   (let ((len (length alpha-pair)))
-    (cond 
+    (cond
       ((= len 1) (char->decimal (char alpha-pair 0)))
       ((= len 2) (+ (* 45 (char->decimal (char alpha-pair 0)))
         (char->decimal (char alpha-pair 1))))
-      (t (error 'qr-bad-arguments :file-name "qr-data-bstring.lisp" 
+      (t (error 'qr-bad-arguments :file-name "qr-data-bstring.lisp"
     :function-name "pair->decimal" :arguments alpha-pair
     :how "Under ALPHANUMERIC mode, data is divided into pair of 2.")))))
 
@@ -127,7 +127,7 @@
       (if (>= (+ idx 1) len) ; only 1 char left
     (setf bstring (concatenate 'string bstring
              (pair->bstring (subseq data idx (+ idx 1)))))
-    (setf bstring (concatenate 'string bstring 
+    (setf bstring (concatenate 'string bstring
              (pair->bstring (subseq data idx (+ idx 2)))))))
     bstring))
 

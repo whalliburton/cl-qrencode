@@ -115,7 +115,7 @@ we shall delete those terms whose cofficient are 0."
   (when message-p
     (setf polynomial (remove-if #'zerop polynomial :key #'car)))
   (sort polynomial #'> :key #'cdr))
-  
+
 ; Addition Group for this Galois Field GF(2^8)
 (defmethod addition ((msgobj message-polynomial) (genobj generator-polynomial))
   "Addition for GF(2^8) between a message polynomial and a generator polynomial,
@@ -206,7 +206,7 @@ correction word _MINUS_ 1."
   (declare (type string bstring)
      (type number version)
      (type symbol errc))
-  (let ((exponents (- (+ (nr-data-codewords version errc blk) 
+  (let ((exponents (- (+ (nr-data-codewords version errc blk)
        (nr-errc-codewords version errc))
          1))
   (terms (/ (length bstring) 8))

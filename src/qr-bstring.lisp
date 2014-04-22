@@ -7,14 +7,14 @@
 ;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ;;;; qr-bstring.lisp
-;;;; This file contains utilities that convert QR-INPUT to binary string (bstring, 
+;;;; This file contains utilities that convert QR-INPUT to binary string (bstring,
 ;;;; bitstream, or bit sequence, we may say).
 ;;;;
 
@@ -56,7 +56,7 @@
   (make-string (- 8 (mod blength 8)) :initial-element #\0))
 
 (defun padding-pad-codeword (remain-bits)
-  "Padding Pad Codewords 11101100 & 00010001 to fill data codeword capacity of symbol. 
+  "Padding Pad Codewords 11101100 & 00010001 to fill data codeword capacity of symbol.
 We have assured that REMAIN-BITS is multiple of 8 in function (padding-bits)."
   (declare (type number remain-bits))
   (when (not (= (mod remain-bits 8) 0))
@@ -97,9 +97,9 @@ We have assured that REMAIN-BITS is multiple of 8 in function (padding-bits)."
       (let ((blocks (bstring->blocks bstring version correct)))
   (do-errc blocks version correct)
   (setf bstring (blocks->bstring blocks version correct)))
-    
+
       ; 7. Any remainder bits needed? *MODULE-CAPACITY-TABLE*
       (setf bstring (concatenate 'string bstring
          (make-string (remainder-bits version) :initial-element #\0))))
-    
+
     bstring))

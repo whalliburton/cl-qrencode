@@ -7,7 +7,7 @@
 ;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
@@ -23,10 +23,10 @@
 ;; (0) First, we need to encode the data mode we are using into bstring. There are
 ;;     four encodable character sets: :NUMERIC, :ALPHANUMERIC, :BINARY, :KANJI
 ;;------------------------------------------------------------------------------
-;; TODO: Also, there should be mode indicators for Structured Append(0011), 
+;; TODO: Also, there should be mode indicators for Structured Append(0011),
 ;;        FNC1(0101 | 1001) and ECI(0111) mode. -- Ch8.4
 (defvar *mode-indicator* #("0001" "0010" "0100" "1000" "0011" "0101" "1001" "0111")
-  "Four-bit identifier indicating in which mode the NEXT data sequence is 
+  "Four-bit identifier indicating in which mode the NEXT data sequence is
 encoded.")
 (defun mode->index (mode &key (default-p nil))
   "DEFAULT-P means if we want use default value for non-recognizable MODE."
@@ -57,12 +57,12 @@ encoded.")
   #2A((10 9  8  8)    ; Version 1 ~ 9
       (12 11 16 10)   ; Version 10 ~ 26
       (14 13 16 12))  ; Version 27 ~ 40
-  "Number of bits in Character Count Indicator, which varies according to the 
+  "Number of bits in Character Count Indicator, which varies according to the
 mode and symbol version in use.")
 (defun count-indicator-bits (version mode)
   "# of bits used to represent length of data."
   (let (i j)
-    (setf i (cond 
+    (setf i (cond
         ((<= 1 version 9) 0)
         ((<= 10 version 26) 1)
         ((<= 27 version 40) 2)
@@ -88,12 +88,12 @@ mode and symbol version in use.")
       (9392 7312 5312 4112)    (10208 8000 5744 4304)   ; Version 21 ~ 25
       (10960 8496 6032 4768)   (11744 9024 6464 5024)   (12248 9544 6968 5288)
       (13048 10136 7288 5608)  (13880 10984 7880 5960)  ; Version 26 ~ 30
-      (14744 11640 8264 6344)  (15640 12328 8920 6760)  (16568 13048 9368 7208)  
+      (14744 11640 8264 6344)  (15640 12328 8920 6760)  (16568 13048 9368 7208)
       (17528 13800 9848 7688)  (18488 14496 10288 7888) ; Version 31 ~ 35
       (19472 15312 10832 8432) (20528 15936 11408 8768) (21616 16816 12016 9136)
       (22496 17728 12656 9776) (23648 18672 13328 10208)); Version 36 ~ 40
   "Data bits capacity for each version and correction level, including mode indicator
-and character count indicator, _not_ including error correction bits. And of course, 
+and character count indicator, _not_ including error correction bits. And of course,
 for each mode, the character capacity are different.")
 (defun corrlev->index (correct &key (default-p nil))
   "Get corresponding index for correct level, :level-q will be default."
@@ -105,7 +105,7 @@ for each mode, the character capacity are different.")
     (:level-h 3)
     (t (if default-p
      2
-     (error 'qr-bad-arguments :file-name "qr-spec.lisp" 
+     (error 'qr-bad-arguments :file-name "qr-spec.lisp"
       :function-name "corrlev->index"
       :arguments '(correct) :how "Allowded Correction Level only includes
  `:level-l',`:level-m', `:level-q' and `:level-h'")))))
@@ -218,7 +218,7 @@ for each mode, the character capacity are different.")
       (165 1590 67 25568 3196 0) (169 1598 67 26896 3362 0)
       (173 1606 67 28256 3532 0) (177 1614 67 29648 3706 0)) ; Version 40
   "Number of modules(as version increased, 4 modules added) A | Function pattern
-modules B | Format and Version information modules C | Data modules(A^2-B-C) | Data 
+modules B | Format and Version information modules C | Data modules(A^2-B-C) | Data
 capacity codewords(including error correction) | Remainder bits.")
 (defun module-capacity (version idx)
   (when (or (not (<= 1 version 40))
@@ -285,7 +285,7 @@ capacity codewords(including error correction) | Remainder bits.")
          (when (valid-center-p y x modules)
      (setf centers (append centers (list `(,y ,x)))))))))
     centers))
-    
+
 (defun mask-condition (indicator)
   "There are 8 mask patterns, get the mask generation condition, modules which
 meet the condition are reversed."

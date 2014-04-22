@@ -7,7 +7,7 @@
 ;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
@@ -86,7 +86,7 @@ MODULES as an argument is that we want provide a common interface to users."
   (let ((modules (matrix-modules version)))
     (loop for idx from 8 to (- modules 9) do
    (if (evenp idx)
-       (progn 
+       (progn
          (setf (aref matrix 6 idx) *fdark*) ; Horizontal
          (setf (aref matrix idx 6) *fdark*)); Vertical
        (progn
@@ -243,7 +243,7 @@ to version."
     (setf matrix (paint-function-pattern matrix version :blank blank))
     ;(print matrix)
     (setf matrix (paint-encoding bstring matrix version :blank blank))
-    
+
     ; mask pattern
     (multiple-value-bind (matrix pat)
   (mask-matrix matrix)
@@ -255,10 +255,10 @@ to version."
       (when (>= version 7)
   (let ((vbstring (decimal->bstring version 6)))
     (paint-version (info->bstring vbstring :format-p nil) matrix (matrix-modules version))))
-      
+
       (dbg :qr-matrix "~A~%" matrix)
       matrix)))
-    
+
 (defun reserved-module-p (x y version)
   "If (X, Y) is reserved by Function Pattern, or Format Information, or Version
 Information: they cannot be masked."

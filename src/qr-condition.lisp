@@ -49,7 +49,7 @@
                (arguments condition))
            (format stream "~A~%" (how condition)))
          (format stream "~A~%" (what condition))))))
-  
+
 (define-condition qr-not-implemented (qr-condition)
   ((mode :accessor mode
      :initarg :mode
