@@ -41,4 +41,6 @@
           (set-color qrarray x y 0)
           (set-color qrarray x y 255)))
         (set-color qrarray x y 255))))
-    (zpng:write-png qrpng fpng :if-exists :supersede)))
+    (etypecase fpng
+      (stream (zpng:write-png-stream qrpng fpng))
+      ((or pathname string) (zpng:write-png qrpng fpng :if-exists :supersede)))))
